@@ -1,0 +1,28 @@
+{
+  "name": "jest-testrail",
+  "version": "0.0.1-0",
+  "description": "Reporter and transformer for jest reporting",
+  "main": "reporter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://cinada@bitbucket.org/cinada/jest-testrail.git"
+  },
+  "keywords": [
+    "jest",
+    "testrail",
+    "testrails",
+    "test",
+    "transform",
+    "reporter",
+    "report"
+  ],
+  "author": "Clark A Inada",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/cinada/jest-testrail#readme",
+  "dependencies": {
+    "craydent": "^0.8.9"
+  }
+}

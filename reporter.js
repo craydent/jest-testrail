@@ -87,8 +87,8 @@ class Reporter {
         this._addSuitesToResults(suiteGroups);
     }
     onRunComplete(contexts, results) {
-        let config = this.testResults.options;
-        let options = this.testResults.config;
+        let config = this.testResults.config;
+        let options = this.testResults.options;
         let templatePath = (options.templatePath || "").replace('<rootDir>', config.rootDir);
         let path = (options.outputFile || '<rootDir>/results.json').replace('<rootDir>', config.rootDir);
         if (!templatePath) {

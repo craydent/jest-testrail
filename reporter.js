@@ -89,12 +89,12 @@ class Reporter {
     onRunComplete(contexts, results) {
         let config = this.testResults.config;
         let options = this.testResults.options;
-        let templatePath = (options.templatePath || "").replace('<rootDir>', config.rootDir);
+        let templatePath = (options.template || "").replace('<rootDir>', config.rootDir);
         let path = (options.outputFile || '<rootDir>/results.json').replace('<rootDir>', config.rootDir);
         if (!templatePath) {
             this._writeToJSON(path);
         } else {
-            this._writeToFile(options.template, path);
+            this._writeToFile(templatePath, path);
         }
     }
 

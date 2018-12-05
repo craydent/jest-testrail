@@ -1,6 +1,6 @@
 {
   "name": "jest-testrail",
-  "version": "0.0.1-2",
+  "version": "1.0.0",
   "description": "Reporter and transformer for jest reporting",
   "main": "reporter.js",
   "scripts": {
@@ -23,6 +23,6 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/cinada/jest-testrail#readme",
   "dependencies": {
-    "craydent": "^0.8.9"
+    "craydent": "^0.9.0"
   }
 }

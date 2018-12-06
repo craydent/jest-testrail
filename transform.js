@@ -41,7 +41,10 @@ function processMatches(src, matches, options) {
     let tags = {};
     if(options.tags) {
         for (let i = 0, len = options.tags.length; i < len; i++) {
-            let tag =options.tags[i];
+            let tag = options.tags[i];
+            if (!/^[_a-zA-Z$][_a-zA-Z0-9$]+$/.test(tag)){
+                continue;
+            }
             eval(`
             var ${tag.toLowerCase()}s = [];
             tags.${tag} = ${tag.toLowerCase()}s;

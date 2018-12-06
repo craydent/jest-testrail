@@ -40,7 +40,7 @@ This module is an extention for Jest and provides a transformer and reporter pro
                 // optional regex to use in matching tags
                 // default regex is /(\[(StoryID|AutomationID)\(['"][\s\S]*?['"]\)\][\s\S]*?)+?(test|describe)[\s\S]*?\(['"][\s\S]*?['"],[\s\S]*?\)/g
                 "match": "/validRegex/g", // required if you are using tags
-                "tags": [""], // defaults are StoryID and AutomationID
+                "tags": [""], // defaults are StoryID and AutomationID (must only contain alphanumeric or "_" or "$" and can not start with a number)
                 // template file (example given below)
                 "template": "<rootDir>/template.xml", // optional template file
                 "outputFile": "<rootDir>/results.json" // any file name and type when "template" is defined

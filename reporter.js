@@ -1,4 +1,7 @@
 let $c = require('craydent');
+let RED = '\x1b[31m%s\x1b[0m';
+let GREEN = '\x1b[32m%s\x1b[0m';
+let YELLOW = '\x1b[33m%s\x1b[0m';
 class Reporter {
     constructor(globalConfig, options) {
         this.testResults = {
@@ -9,7 +12,7 @@ class Reporter {
             date: $c.format($c.now(), 'Y-m-d'),
             runtime: '',
             config: globalConfig,
-            options: options,
+            options: options || {},
             total: 0,
             passed: 0,
             failed: 0,
@@ -17,10 +20,14 @@ class Reporter {
             time: 0.0,
             errors: 0
         };
+        let hooksPath = (this.testResults.options.hooks || '').replace('<rootDir>', globalConfig.rootDir);
+        let hooks = $c.include(hooksPath);
+        options.hooks = hooks || {}
     }
 
     onTestResult(test, testResult, aggregatedResult) {
         let suiteGroups = {};
+        let options = this.testResults.options;
         for (let i = 0, len = testResult.testResults.length; i < len; i++) {
             const result = testResult.testResults[i];
             const group = $c
@@ -35,7 +42,7 @@ class Reporter {
                 $c.tryEval(x)
             );
 
-            if (!metaObjects) {
+            if (!metaObjects.length) {
                 continue;
             }
             let test = {
@@ -44,12 +51,14 @@ class Reporter {
                 result: result.status,
                 storyId: '',
                 automationId: '',
+                tags: {},
                 type: 'UnitTest'
             };
 
             for (let j = 0, jlen = metaObjects.length; j < jlen; j++) {
                 let storyIds = metaObjects[j].storyIds || [];
                 let automationIds = metaObjects[j].automationIds || [];
+                test.tags = metaObjects[j].tags || {};
                 if (storyIds.length && automationIds.length) {
                     for (let k = 0, klen = storyIds.length; k < klen; k++) {
                         for (let l = 0, llen = automationIds.length; l < llen; l++) {
@@ -85,16 +94,39 @@ class Reporter {
             }
         }
         this._addSuitesToResults(suiteGroups);
+
+        if ($c.get(options, 'hooks.onTestResult')) {
+            try {
+                let groups = [];
+                for (let name in suiteGroups) {
+                    const suiteGroup = suiteGroups[name];
+                    groups.push(suiteGroup);
+                }
+                options.hooks.onTestResult(groups, this.testResults);
+            } catch (e) {
+                console.log(RED, e);
+            }
+        }
     }
     onRunComplete(contexts, results) {
         let config = this.testResults.config;
         let options = this.testResults.options;
         let templatePath = (options.template || "").replace('<rootDir>', config.rootDir);
         let path = (options.outputFile || '<rootDir>/results.json').replace('<rootDir>', config.rootDir);
-        if (!templatePath) {
-            this._writeToJSON(path);
+
+
+        if ($c.get(options, 'hooks.onRunComplete')) {
+            try {
+                options.hooks.onRunComplete(this.testResults);
+            } catch (e) {
+                console.log(RED, e);
+            }
         } else {
-            this._writeToFile(templatePath, path);
+            if (!templatePath) {
+                this._writeToJSON(path);
+            } else {
+                this._writeToFile(templatePath, path);
+            }
         }
     }
 

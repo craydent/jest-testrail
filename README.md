@@ -35,6 +35,12 @@ This module is an extention for Jest and provides a transformer and reporter pro
         ...otherJestOptions,
         "reporters": [
             ["jest-testrail/reporter",{
+                // hook can be a file or a package that export event handlers (example given below).
+                "hooks": "<rootDir>/hook.js", // optional hooks to inject during runtime.
+                // optional regex to use in matching tags
+                // default regex is /(\[(StoryID|AutomationID)\(['"][\s\S]*?['"]\)\][\s\S]*?)+?(test|describe)[\s\S]*?\(['"][\s\S]*?['"],[\s\S]*?\)/g
+                "match": "/validRegex/g", // required if you are using tags
+                "tags": [""], // defaults are StoryID and AutomationID
                 // template file (example given below)
                 "template": "<rootDir>/template.xml", // optional template file
                 "outputFile": "<rootDir>/results.json" // any file name and type when "template" is defined
@@ -46,6 +52,31 @@ This module is an extention for Jest and provides a transformer and reporter pro
     }
 }
 ```
+#### Hooks
+```ts
+interface SuiteGroup {
+    total: number,
+    passed: number,
+    failed: number,
+    pending: number,
+    time: number,
+    name: string,
+    tests: [{
+        name: string,
+        time: number,
+        result: string,
+        storyId: string,
+        automationId: string,
+        tags: object, // object with tag as the property name. (ex: if tags:["AID"] was provided in the config, tags = {AID:string})
+        type: 'UnitTest'
+    }]
+}
+// testResults is the object passed to the template (see below)
+module.export.onTestResult = (suiteGroups:SuiteGroup[], testResults) => void
+module.export.onRunComplete = (testResults) => void
+```
+
+#### Templates
 ```ts
 // data object passed to the template
 {
@@ -62,6 +93,7 @@ This module is an extention for Jest and provides a transformer and reporter pro
             result: string,
             storyId: string,
             automationId: string,
+            tags: object,
             type: 'UnitTest'
         }]
     }],

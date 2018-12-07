@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.2] - 12/07/18
+
+#### Docs
+- Adding package-auto-version for CHANGELOG updatesCreate CHANGELOG.md.
+
+
+
+#### Fixes
+- Update git downloads to the correct url in the README.
+
+
+
+
 ## [1.1.1] - 12/06/18
 #### Docs
 - Updated README for tags.

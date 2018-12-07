@@ -137,8 +137,8 @@ module.export.onRunComplete = (testResults) => void
 
 ## Download
 
- * [GitHub](https://github.com/cinada/jest-testrails)
- * [BitBucket](https://bitbucket.org/cinada/jest-testrails)
- * [GitLab](https://gitlab.com/cinada/jest-testrails)
+ * [GitHub](https://github.com/craydent/jest-testrail)
+ * [BitBucket](https://bitbucket.org/cinada/jest-testrail)
+ * [GitLab](https://gitlab.com/craydent/jest-testrail)
 
 Jest TestRail is released under the [licensed under the MIT license].

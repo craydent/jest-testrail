@@ -22,7 +22,17 @@
   "author": "Clark A Inada",
   "license": "MIT",
   "homepage": "https://bitbucket.org/cinada/jest-testrail#readme",
+  "pav": {
+    "changelog": "./CHANGELOG.md",
+    "changelogTemplate": "package-auto-version/git-documentation",
+    "noPrompt": true,
+    "versions": "minor,major,patch",
+    "match": "package-auto-version/git-documentation-match"
+  },
   "dependencies": {
     "craydent": "^0.9.0"
+  },
+  "devDependencies": {
+    "package-auto-version": "^1.2.2"
   }
 }

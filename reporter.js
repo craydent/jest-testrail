@@ -1,7 +1,8 @@
-let $c = require('craydent');
-let RED = '\x1b[31m%s\x1b[0m';
-let GREEN = '\x1b[32m%s\x1b[0m';
-let YELLOW = '\x1b[33m%s\x1b[0m';
+const fs = require('fs');
+const $c = require('craydent');
+const RED = '\x1b[31m%s\x1b[0m';
+const GREEN = '\x1b[32m%s\x1b[0m';
+const YELLOW = '\x1b[33m%s\x1b[0m';
 class Reporter {
     constructor(globalConfig, options) {
         this.testResults = {
@@ -122,6 +123,14 @@ class Reporter {
                 console.log(RED, e);
             }
         } else {
+            try {
+                let dir = require('path').dirname(path);
+                fs.mkdirSync(dir, { recursive: true });
+            } catch(e){
+                if (e.code !== 'EEXIST') {
+                    throw e;
+                }
+            }
             if (!templatePath) {
                 this._writeToJSON(path);
             } else {
@@ -183,7 +192,6 @@ class Reporter {
         return newTest;
     }
     _writeToFile(templatePath, path) {
-        const fs = require('fs');
         const template = fs.readFileSync(templatePath, 'utf8');
         const content = $c
             .fillTemplate(template, this.testResults)

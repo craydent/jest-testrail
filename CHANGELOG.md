@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.3] - 12/17/18
+
+#### Fixes
+- Fix crash when path to output directory does not exist
+
+
 ## [1.1.2] - 12/07/18
 
 #### Docs

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.4] - 03/20/19
+
+
+
+#### Fixes
+- run time and time were not populating on the root
+
+
+
+
 ## [1.1.3] - 12/17/18
 
 #### Fixes

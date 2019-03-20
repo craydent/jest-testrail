@@ -31,6 +31,7 @@ class Reporter {
         let options = this.testResults.options;
         for (let i = 0, len = testResult.testResults.length; i < len; i++) {
             const result = testResult.testResults[i];
+            this.testResults.time += result.duration;
             const group = $c
                 .last(result.ancestorTitles)
                 .replace(/\{.*?(\}\s-\s)/g, '');
@@ -115,7 +116,7 @@ class Reporter {
         let templatePath = (options.template || "").replace('<rootDir>', config.rootDir);
         let path = (options.outputFile || '<rootDir>/results.json').replace('<rootDir>', config.rootDir);
 
-
+        this.testResults.runtime = $c.now().getTime() - results.startTime;
         if ($c.get(options, 'hooks.onRunComplete')) {
             try {
                 options.hooks.onRunComplete(this.testResults);

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.5] - 03/21/19
+
+
+
+#### Fixes
+- multiple automation ids for a single story only produced one test result
+
+
+
+
 ## [1.1.4] - 03/20/19
 
 

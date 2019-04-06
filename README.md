@@ -55,21 +55,22 @@ This module is an extention for Jest and provides a transformer and reporter pro
 #### Hooks
 ```ts
 interface SuiteGroup {
-    total: number,
-    passed: number,
-    failed: number,
-    pending: number,
-    time: number,
-    name: string,
-    tests: [{
-        name: string,
-        time: number,
-        result: string,
-        storyId: string,
-        automationId: string,
-        tags: object, // object with tag as the property name. (ex: if tags:["AID"] was provided in the config, tags = {AID:string})
-        type: 'UnitTest'
-    }]
+    total: number;
+    passed: number;
+    failed: number;
+    pending: number;
+    skipped: number;
+    time: number;
+    name: string;
+    tests: Array<{
+        name: string;
+        time: number;
+        result: string;
+        storyId: string;
+        automationId: string;
+        tags: object; // object with tag as the property name. (ex: if tags:["AID"] was provided in the config, tags = {AID:string})
+        type: 'UnitTest';
+    }>];
 }
 // testResults is the object passed to the template (see below)
 module.export.onTestResult = (suiteGroups:SuiteGroup[], testResults) => void
@@ -101,7 +102,7 @@ module.export.onRunComplete = (testResults) => void
     environment: string,
     framework: string,
     date: string, //today's date in Y-m-d format
-    runtime: string,
+    runtime: number,
     config: any, //globalConfig object passed to the Reporter
     options: any, //options object passed to the Reporter
     total: number,

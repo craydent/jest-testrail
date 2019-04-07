@@ -1,19 +1,29 @@
-const fs = require("fs");
-const $c = require("craydent");
+import * as fs from "fs";
+import * as $c from "craydent";
+import { TestResult as Result, Options } from "../models/TestResult";
+import { Test as RTest, SuiteGroup } from "../models/Suite";
+import { BaseReporter } from "@jest/reporters";
+import { AggregatedResult, TestResult, AssertionResult } from '@jest/test-result';
+import { Test } from "@jest/reporters/build/types";
+import { GlobalConfig } from "@jest/types/build/Config";
+
 const RED = "\x1b[31m%s\x1b[0m";
 const GREEN = "\x1b[32m%s\x1b[0m";
 const YELLOW = "\x1b[33m%s\x1b[0m";
-class Reporter {
-  constructor(globalConfig, options) {
+
+export default class JestReporter extends BaseReporter {
+  public testResults: Result;
+  constructor(globalConfig: GlobalConfig, options: Options = {} as Options) {
+    super();
     this.testResults = {
       suites: [],
       name: "",
       environment: "",
       framework: "",
       date: $c.format($c.now(), "Y-m-d"),
-      runtime: "",
+      runtime: 0,
       config: globalConfig,
-      options: options || {},
+      options: options,
       total: 0,
       passed: 0,
       failed: 0,
@@ -21,20 +31,21 @@ class Reporter {
       time: 0.0,
       errors: 0
     };
-    let hooksPath = (this.testResults.options.hooks || "").replace(
+    let hooksPath = ($c.get(this, 'testResults.options.hooks') || "").replace(
       "<rootDir>",
       globalConfig.rootDir
     );
-    let hooks = $c.include(hooksPath);
-    options.hooks = hooks || {};
+
+    options.hooks = hooksPath ? $c.include(hooksPath) : {};
   }
 
-  onTestResult(test, testResult, aggregatedResult) {
+  onTestResult(test: Test, testResult: TestResult, aggregatedResult: AggregatedResult) {
     let suiteGroups = {};
     let options = this.testResults.options;
     for (let i = 0, len = testResult.testResults.length; i < len; i++) {
       const result = testResult.testResults[i];
       this.testResults.time += result.duration;
+
       const group = $c
         .last(result.ancestorTitles)
         .replace(/\{.*?(\}\s-\s)/g, "");
@@ -50,7 +61,7 @@ class Reporter {
       if (!metaObjects.length) {
         continue;
       }
-      let test = {
+      let test: RTest = {
         name: result.title.replace(/\{.*?(\}\s-\s)/g, ""),
         time: result.duration,
         result: result.status,
@@ -63,6 +74,7 @@ class Reporter {
       for (let j = 0, jlen = metaObjects.length; j < jlen; j++) {
         let storyIds = metaObjects[j].storyIds || [];
         let automationIds = metaObjects[j].automationIds || [];
+
         test.tags = metaObjects[j].tags || {};
         if (storyIds.length && automationIds.length) {
           for (let k = 0, klen = storyIds.length; k < klen; k++) {
@@ -87,7 +99,7 @@ class Reporter {
             }
             tests.push(newTest);
           }
-        } else if (automationIds.length) {
+        } else {
           for (let l = 0, llen = automationIds.length; l < llen; l++) {
             let newTest = this._getTest(tests, test, null, automationIds[l]);
             if (!newTest) {
@@ -102,7 +114,7 @@ class Reporter {
 
     if ($c.get(options, "hooks.onTestResult")) {
       try {
-        let groups = [];
+        let groups: SuiteGroup[] = [];
         for (let name in suiteGroups) {
           const suiteGroup = suiteGroups[name];
           groups.push(suiteGroup);
@@ -142,23 +154,23 @@ class Reporter {
         }
       }
       if (!templatePath) {
-        this._writeToJSON(path);
-      } else {
-        this._writeToFile(templatePath, path);
+        return this._writeToJSON(path);
       }
+      this._writeToFile(templatePath, path);
     }
   }
 
   _addSuitesToResults(suiteGroups) {
     for (let name in suiteGroups) {
-      const suiteGroup = suiteGroups[name];
+      const suiteGroup: SuiteGroup = suiteGroups[name];
       if (!suiteGroup.tests.length) {
         continue;
       }
-      const suite = {
+      const suite: SuiteGroup = {
         total: suiteGroup.total,
         passed: suiteGroup.passed,
         failed: suiteGroup.failed,
+        pending: suiteGroup.pending,
         skipped: suiteGroup.pending,
         name: name,
         time: suiteGroup.time,
@@ -168,13 +180,15 @@ class Reporter {
       this.testResults.suites.push(suite);
     }
   }
-  _getSuiteGroupAndTests(result, suiteGroup) {
+  _getSuiteGroupAndTests(result: AssertionResult, suiteGroup: SuiteGroup) {
     suiteGroup = suiteGroup || {
+      name: "",
       tests: [],
       total: 0,
       passed: 0,
       failed: 0,
       pending: 0,
+      skipped: 0,
       time: 0
     };
     suiteGroup.time += result.duration;
@@ -182,38 +196,36 @@ class Reporter {
     suiteGroup.total += 1;
     return { suiteGroup, tests: suiteGroup.tests };
   }
-  _getTest(tests, test, storyId, automationId) {
+  _getTest(tests: RTest[], test: RTest, storyId?: string, automationId?: string) {
+    storyId = storyId || '';
+    automationId = automationId || ''
     let obj = tests.find(
       x => x.storyId == storyId && x.automationId == automationId
     );
-    if (obj) {
+    if (obj && !(storyId == '' && automationId == '')) {
       if (test.result === "failed" || obj.result === "failed") {
         obj.result = "failed";
       } else {
         obj.result = test.result;
       }
+
+      obj.time += test.time;
       return;
+
     }
-    let newTest = { ...test };
-    if (storyId) {
-      newTest.storyId = storyId;
-    }
-    if (automationId) {
-      newTest.automationId = automationId;
-    }
+
+    let newTest = { ...test, storyId, automationId };
+
     return newTest;
   }
-  _writeToFile(templatePath, path) {
+  _writeToFile(templatePath: string, path: string) {
     const template = fs.readFileSync(templatePath, "utf8");
     const content = $c
       .fillTemplate(template, this.testResults)
       .replace_all("\n", "");
     fs.writeFileSync(path, content);
   }
-  _writeToJSON(path) {
-    const fs = require("fs");
+  _writeToJSON(path: string) {
     fs.writeFileSync(path, JSON.stringify(this.testResults, null, 2));
   }
 }
-
-module.exports = Reporter;

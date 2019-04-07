@@ -2,9 +2,10 @@
   "name": "jest-testrail",
   "version": "1.1.5",
   "description": "Reporter and transformer for jest reporting",
-  "main": "reporter.js",
+  "main": "dist/src/reporter.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,15 @@
     "craydent": "^0.9.0"
   },
   "devDependencies": {
-    "package-auto-version": "^1.2.4"
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
+    "@jest/reporters": "^24.7.0",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.0",
+    "babel-jest": "^24.7.1",
+    "jest": "^24.7.0",
+    "package-auto-version": "^1.2.4",
+    "typescript": "^3.4.2"
   }
 }

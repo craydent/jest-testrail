@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.0] - 04/07/19
+
+
+
+#### Docs
+- updated module to a TypeScript module
+
+
+
+
 ## [1.1.5] - 03/21/19
 
 

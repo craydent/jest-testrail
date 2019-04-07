@@ -70,7 +70,7 @@ interface SuiteGroup {
         automationId: string;
         tags: object; // object with tag as the property name. (ex: if tags:["AID"] was provided in the config, tags = {AID:string})
         type: 'UnitTest';
-    }>];
+    }>;
 }
 // testResults is the object passed to the template (see below)
 module.export.onTestResult = (suiteGroups:SuiteGroup[], testResults) => void
@@ -114,7 +114,7 @@ module.export.onRunComplete = (testResults) => void
 }
 ```
 ```xml
-<!-- example xUnit xml template-->
+<!-- example xUnit xml template which follows Craydent's fillTemplate syntax-->
 <?xml version="1.0" encoding="utf-8"?>
 <assemblies>
  <assembly name="SomeName" run-date="${date}" run-time="${runtime}" total="${total}" passed="${passed}" failed="${failed}" skipped="${skipped}" time="time" errors="0">

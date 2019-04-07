@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./",
+        "target": "es5",
+        "sourceMap": true,
+        "removeComments": true,
+        "module": "commonjs",
+        "declaration": true,
+        "lib": [
+            "dom",
+            "es2017"
+        ],
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "outDir": "./dist"
+    },
+    "include": [
+        "**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist/**",
+        "test/**"
+    ]
+}

@@ -5,6 +5,7 @@ import { TestResult } from "@jest/test-result";
 import { TestResult as Result } from "../models/TestResult";
 import { Test as RTest } from "../models/Suite";
 
+const RED = "\x1b[31m%s\x1b[0m";
 jest.mock('fs');
 jest.mock('hooks');
 const fs = require('fs');
@@ -241,7 +242,6 @@ describe('JestReporter', () => {
         test('with hook throwing error', () => {
             let reporter = new JestReporter(config, { hooks: 'hooks' as any });
             let error = new Error();
-            const RED = "\x1b[31m%s\x1b[0m";
             hooks.onTestResult = jest.fn().mockImplementationOnce(() => { throw error });
             const spy = jest.spyOn(global.console, 'log')
             let testResult: TestResult = {
@@ -341,12 +341,16 @@ describe('JestReporter', () => {
                 .not.toHaveBeenCalled();
 
         });
-        test('with hook', () => {
+        test('with hook throwing error', () => {
             let reporter = new JestReporter(config, { hooks: 'hooks' as any });
+            let error = new Error();
+            const spy = jest.spyOn(global.console, 'log')
             reporter._writeToFile = jest.fn().mockImplementationOnce(() => { });
             reporter._writeToJSON = jest.fn().mockImplementationOnce(() => { });
-            hooks.onRunComplete = jest.fn().mockImplementationOnce(() => { throw ''; });
+            hooks.onRunComplete = jest.fn().mockImplementationOnce(() => { throw error; });
             reporter.onRunComplete(null, { startTime: $c.now().getTime() });
+
+            expect(spy).toHaveBeenCalledWith(RED, error);
             expect(reporter.testResults.runtime).toBe(0);
             expect(hooks.onRunComplete).toHaveBeenCalled();
             expect(reporter._writeToFile)

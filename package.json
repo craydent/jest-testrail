@@ -1,6 +1,6 @@
 {
   "name": "jest-testrail",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Reporter and transformer for jest reporting",
   "main": "reporter.js",
   "scripts": {
@@ -31,13 +31,13 @@
     "match": "package-auto-version/git-documentation-match"
   },
   "dependencies": {
+    "@jest/reporters": "^24.7.0",
     "craydent": "^0.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-typescript": "^7.3.3",
-    "@jest/reporters": "^24.7.0",
     "@types/jest": "^24.0.11",
     "@types/node": "^11.13.0",
     "babel-jest": "^24.7.1",

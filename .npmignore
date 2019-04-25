@@ -4,4 +4,4 @@ coverage/
 models/
 src/
 tests/
-CHANGELOG.models
+CHANGELOG.md

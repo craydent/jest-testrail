@@ -2,7 +2,6 @@ import * as fs from "fs";
 import * as $c from "craydent";
 import { TestResult as Result, Options } from "../models/TestResult";
 import { Test as RTest, SuiteGroup } from "../models/Suite";
-import { BaseReporter } from "@jest/reporters";
 import { AggregatedResult, TestResult, AssertionResult } from '@jest/test-result';
 import { Test } from "@jest/reporters/build/types";
 import { GlobalConfig } from "@jest/types/build/Config";
@@ -11,10 +10,9 @@ const RED = "\x1b[31m%s\x1b[0m";
 const GREEN = "\x1b[32m%s\x1b[0m";
 const YELLOW = "\x1b[33m%s\x1b[0m";
 
-export default class JestReporter extends BaseReporter {
+export default class JestReporter {
   public testResults: Result;
   constructor(globalConfig: GlobalConfig, options: Options = {} as Options) {
-    super();
     this.testResults = {
       suites: [],
       name: "",

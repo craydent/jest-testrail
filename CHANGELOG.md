@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1] - 04/25/19
+
+
+
+#### Fixes
+- fix breaking import because of the file relocation
+
+
 ## [2.0.0] - 04/07/19
 
 

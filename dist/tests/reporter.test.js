@@ -13,6 +13,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var $c = require("craydent");
 var reporter_1 = require("../src/reporter");
+var RED = "\x1b[31m%s\x1b[0m";
 jest.mock('fs');
 jest.mock('hooks');
 var fs = require('fs');
@@ -236,7 +237,6 @@ describe('JestReporter', function () {
         test('with hook throwing error', function () {
             var reporter = new reporter_1.default(config, { hooks: 'hooks' });
             var error = new Error();
-            var RED = "\x1b[31m%s\x1b[0m";
             hooks.onTestResult = jest.fn().mockImplementationOnce(function () { throw error; });
             var spy = jest.spyOn(global.console, 'log');
             var testResult = {
@@ -329,12 +329,15 @@ describe('JestReporter', function () {
             expect(reporter._writeToJSON)
                 .not.toHaveBeenCalled();
         });
-        test('with hook', function () {
+        test('with hook throwing error', function () {
             var reporter = new reporter_1.default(config, { hooks: 'hooks' });
+            var error = new Error();
+            var spy = jest.spyOn(global.console, 'log');
             reporter._writeToFile = jest.fn().mockImplementationOnce(function () { });
             reporter._writeToJSON = jest.fn().mockImplementationOnce(function () { });
-            hooks.onRunComplete = jest.fn().mockImplementationOnce(function () { throw ''; });
+            hooks.onRunComplete = jest.fn().mockImplementationOnce(function () { throw error; });
             reporter.onRunComplete(null, { startTime: $c.now().getTime() });
+            expect(spy).toHaveBeenCalledWith(RED, error);
             expect(reporter.testResults.runtime).toBe(0);
             expect(hooks.onRunComplete).toHaveBeenCalled();
             expect(reporter._writeToFile)

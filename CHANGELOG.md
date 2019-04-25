@@ -9,6 +9,9 @@
 
 
 
+#### Fixes
+- update incorrect tests and added support for ` style quotes
+
 
 ## [1.1.5] - 03/21/19
 

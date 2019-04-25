@@ -1,0 +1,7 @@
+.history
+.vscode
+coverage/
+models/
+src/
+tests/
+CHANGELOG.models

@@ -2,7 +2,7 @@
   "name": "jest-testrail",
   "version": "2.0.0",
   "description": "Reporter and transformer for jest reporting",
-  "main": "dist/src/reporter.js",
+  "main": "reporter.js",
   "scripts": {
     "test": "jest",
     "build": "tsc"

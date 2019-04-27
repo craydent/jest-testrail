@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.0] - 04/26/19
+
+
+#### Features
+- Added a way to continue w/ default behavior for onRunComplete
+
+
+
+
+
 ## [2.0.1] - 04/25/19
 
 

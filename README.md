@@ -74,7 +74,8 @@ interface SuiteGroup {
 }
 // testResults is the object passed to the template (see below)
 module.export.onTestResult = (suiteGroups:SuiteGroup[], testResults) => void
-module.export.onRunComplete = (testResults) => void
+module.export.onRunComplete = (testResults) => void | boolean
+//*Note: For onRunComplete - If truthy is returned, the reporter will continue to execute the default behavior of writing to files. If it any falsy is returned, default behavior is not executed.
 ```
 
 #### Templates

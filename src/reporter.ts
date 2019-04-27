@@ -136,13 +136,15 @@ export default class JestReporter {
     );
 
     this.testResults.runtime = $c.now().getTime() - results.startTime;
+    let shouldContinue: boolean = true;
     if ($c.get(options, "hooks.onRunComplete")) {
       try {
-        options.hooks.onRunComplete(this.testResults);
+        shouldContinue = !!options.hooks.onRunComplete(this.testResults);
       } catch (e) {
         console.log(RED, e);
       }
-    } else {
+    }
+    if (shouldContinue) {
       try {
         let dir = require("path").dirname(path);
         fs.mkdirSync(dir, { recursive: true });

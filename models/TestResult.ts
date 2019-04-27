@@ -20,7 +20,7 @@ export interface TestResult {
 export interface Options {
     hooks?: {
         onTestResult: (suiteGroups: SuiteGroup[], testResult: TestResult) => void;
-        onRunComplete: (testResult: TestResult) => void;
+        onRunComplete: (testResult: TestResult) => void | boolean;
     };
     match?: string;
     tags?: string[];

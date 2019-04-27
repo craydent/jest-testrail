@@ -317,16 +317,6 @@ describe('JestReporter', () => {
                 .not.toHaveBeenCalledWith(path);
 
         });
-        test('with template', () => {
-            const path = "./results.json";
-            let reporter = new JestReporter(config, { template: 'abc' });
-            reporter._writeToFile = jest.fn().mockImplementationOnce(() => { });
-            reporter.onRunComplete(null, { startTime: $c.now().getTime() });
-            expect(reporter.testResults.runtime).toBe(0);
-            expect(reporter._writeToFile)
-                .toHaveBeenCalledWith('abc', path);
-
-        });
         test('with hook', () => {
             let reporter = new JestReporter(config, { hooks: 'hooks' as any });
             reporter._writeToFile = jest.fn().mockImplementationOnce(() => { });
@@ -337,6 +327,20 @@ describe('JestReporter', () => {
             expect(hooks.onRunComplete).toHaveBeenCalled();
             expect(reporter._writeToFile)
                 .not.toHaveBeenCalled();
+            expect(reporter._writeToJSON)
+                .not.toHaveBeenCalled();
+
+        });
+        test('with hook onRunComplete returning true', () => {
+            const path = "./results.json";
+            let reporter = new JestReporter(config, { template: 'abc', hooks: 'hooks' as any });
+            reporter._writeToFile = jest.fn().mockImplementationOnce(() => { });
+            reporter._writeToJSON = jest.fn().mockImplementationOnce(() => { });
+            hooks.onRunComplete = jest.fn().mockImplementationOnce(() => { return true; });
+            reporter.onRunComplete(null, { startTime: $c.now().getTime() });
+            expect(reporter.testResults.runtime).toBe(0);
+            expect(hooks.onRunComplete).toHaveBeenCalled();
+            expect(reporter._writeToFile).toHaveBeenCalledWith('abc', path);
             expect(reporter._writeToJSON)
                 .not.toHaveBeenCalled();
 

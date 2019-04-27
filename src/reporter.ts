@@ -141,6 +141,7 @@ export default class JestReporter {
       try {
         shouldContinue = !!options.hooks.onRunComplete(this.testResults);
       } catch (e) {
+        shouldContinue = false;
         console.log(RED, e);
       }
     }

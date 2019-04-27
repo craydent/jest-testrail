@@ -2,11 +2,15 @@
 
 ## [2.1.0] - 04/26/19
 
+#### Docs
+- Added tests for new onRunComplete behavior
 
 #### Features
 - Added a way to continue w/ default behavior for onRunComplete
 
 
+#### Fixes
+- fix bug when onRunComplete throws error, the default behavior should not execute
 
 
 

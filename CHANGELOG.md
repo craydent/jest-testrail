@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.1] - 05/01/19
+
+
+
+#### Fixes
+- Add publish script to ensure build before publish
+
+
+
+
 ## [2.1.0] - 04/26/19
 
 #### Docs

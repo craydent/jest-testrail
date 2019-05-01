@@ -5,7 +5,8 @@
   "main": "reporter.js",
   "scripts": {
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "tsc && npm publish"
   },
   "repository": {
     "type": "git",

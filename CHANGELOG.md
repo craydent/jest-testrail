@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0] - 05/28/20
+
+
+#### Features
+- Automatically reading custom annotations and storing them without the need for a custom regex
+
+
+#### Fixes
+- Crash when there was a test with no ancestor/describe as the parent
+
+
+
+
 ## [2.1.1] - 05/01/19
 
 

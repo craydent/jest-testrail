@@ -3,9 +3,11 @@
 # Jest TestRail
 **by Clark Inada**
 
-This module is an extention for Jest and provides a transformer and reporter producing a JSON or xUnit XML file based on attributes defined in comments.
+This module is an extention for Jest and provides a transformer and reporter producing a JSON or custom file like an xUnit XML file (when using templates) based on attributes defined in comments.
+#### Example test file with annotations
 ```
     // [StoryID('storyID1', 'storyID2')]
+    // [CustomAnnotation('value')]
     describe('test group', () => {
         // [StoryID('storyID3')]
         // [StoryID('storyID4')]
@@ -38,9 +40,9 @@ This module is an extention for Jest and provides a transformer and reporter pro
                 // hook can be a file or a package that export event handlers (example given below).
                 "hooks": "<rootDir>/hook.js", // optional hooks to inject during runtime.
                 // optional regex to use in matching tags
-                // default regex is /(\[(StoryID|AutomationID)\(['"][\s\S]*?['"]\)\][\s\S]*?)+?(test|describe)[\s\S]*?\(['"][\s\S]*?['"],[\s\S]*?\)/g
-                "match": "/validRegex/g", // required if you are using tags
-                "tags": [""], // defaults are StoryID and AutomationID (must only contain alphanumeric or "_" or "$" and can not start with a number)
+                // default regex is /(\[(.*?)\(['"][\s\S]*?['"]\)\][\s\S]*?)+?(test|describe)[\s\S]*?\(['"][\s\S]*?['"],[\s\S]*?\)/g
+                "match": "/validRegex/g",
+                "tags": ["AID"], // defaults are StoryID and AutomationID (must only contain alphanumeric or "_" or "$" and can not start with a number)
                 // template file (example given below)
                 "template": "<rootDir>/template.xml", // optional template file
                 "outputFile": "<rootDir>/results.json" // any file name and type when "template" is defined
@@ -68,7 +70,8 @@ interface SuiteGroup {
         result: string;
         storyId: string;
         automationId: string;
-        tags: object; // object with tag as the property name. (ex: if tags:["AID"] was provided in the config, tags = {AID:string})
+        tags: object; // object with tag as the property name. (ex: if tags:["AID"] was provided in the config, tags = { AID: string })
+        custom: object; // object with custom annotation as the property name. From the example test file above, this would be { CustomAnnotation: ["value"] }
         type: 'UnitTest';
     }>;
 }
@@ -96,6 +99,7 @@ module.export.onRunComplete = (testResults) => void | boolean
             storyId: string,
             automationId: string,
             tags: object,
+            custom: object,
             type: 'UnitTest'
         }]
     }],
@@ -126,7 +130,8 @@ module.export.onRunComplete = (testResults) => void | boolean
        <test name="${test.name}" time="${test.time}" result="${test.result}" sid="${test.storyId}" aid="${test.automationId}" type="${test.type}">
          <traits>
            ${if ('${test.storyId}')}<trait name="StoryID" value="${test.storyId}" />${end if}
-           ${if ('${test.automationId}'')}<trait name="TestID" value="${test.automationId}" />${end if}
+           ${if ('${test.automationId}')}<trait name="TestID" value="${test.automationId}" />${end if}
+           ${if ('${test.custom && test.custom.CustomAnnotation}')}<trait name="Custom" value="${test.custom.CustomAnnotation[0]}" />${end if}
            ${if ('${test.type}')}<trait name="TestType" value="${test.type}" />${end if}
          </traits>
        </test>

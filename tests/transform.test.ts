@@ -42,7 +42,7 @@ describe('JestTransformer', () => {
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{},custom:{}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
@@ -65,7 +65,7 @@ describe('the describe', () => {
     test('test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{},custom:{}} - test 3', () => {});
 });`;
             expect(alterSource({ src, match: matches[2], storyIds: ['sid2'], automationIds: ['aid2'], tags: {} })).toEqual(expected);
         });
@@ -75,7 +75,7 @@ describe('the describe', () => {
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag": ["ct","ct2"],"CustomTag2": ["c2","c22"]}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag": ["ct","ct2"],"CustomTag2": ["c2","c22"]},custom:{}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
@@ -93,14 +93,14 @@ describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag": ["ct","ct2"
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{},custom:{"CustomTag": ["ct"]}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{}} - test 2', () => {});
+    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{},custom:{}} - test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{},custom:{}} - test 3', () => {});
 });`;
             expect(processMatches(src, matches, {})).toBe(expected);
         });
@@ -109,14 +109,14 @@ describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () =
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag1": [],"CustomTag2": []}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag1": [],"CustomTag2": []},custom:{"CustomTag": ["ct"]}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{"CustomTag1": [],"CustomTag2": []}} - test 2', () => {});
+    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{"CustomTag1": [],"CustomTag2": []},custom:{}} - test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{"CustomTag1": [],"CustomTag2": []}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{"CustomTag1": [],"CustomTag2": []},custom:{}} - test 3', () => {});
 });`
             expect(processMatches(src, matches, { tags: ["CustomTag1", "CustomTag2", "8989"] })).toBe(expected);
         });
@@ -130,14 +130,14 @@ describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag1": [],"Custom
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag": ["ct"],"CustomTag2": []}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{"CustomTag": ["ct"],"CustomTag2": []},custom:{"CustomTag": ["ct"]}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{"CustomTag": [],"CustomTag2": []}} - test 2', () => {});
+    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{"CustomTag": [],"CustomTag2": []},custom:{}} - test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{"CustomTag": [],"CustomTag2": []}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{"CustomTag": [],"CustomTag2": []},custom:{}} - test 3', () => {});
 });`
             expect(processMatches(src, ctMatch, { tags: ["CustomTag", "CustomTag2", "8989"] })).toBe(expected);
         });
@@ -163,14 +163,14 @@ describe('the describe', () => {
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{},custom:{"CustomTag": ["ct"]}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{}} - test 2', () => {});
+    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{},custom:{}} - test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{},custom:{}} - test 3', () => {});
 });`
             expect(process(src, 'filename', { rootDir: '.' } as GlobalConfig)).toBe(expected);
 
@@ -180,14 +180,14 @@ describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () =
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{},custom:{"CustomTag": ["ct"]}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{}} - test 2', () => {});
+    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{},custom:{}} - test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{},custom:{}} - test 3', () => {});
 });`
             expect(process(src, 'filename', { rootDir: '..' } as GlobalConfig)).toBe(expected);
 
@@ -197,11 +197,11 @@ describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () =
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe(\`{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe\`, () => {
+describe(\`{storyIds:["sid"],automationIds:["aid"],tags:{},custom:{"CustomTag": ["ct"]}} - the describe\`, () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test(\`{storyIds:["sid1"],automationIds:["aid1"],tags:{}} - test 2\`, () => {});
+    test(\`{storyIds:["sid1"],automationIds:["aid1"],tags:{},custom:{}} - test 2\`, () => {});
 });`
             expect(process(srcWithTickQuote, 'filename', { rootDir: '..' } as GlobalConfig)).toBe(expected);
 
@@ -214,14 +214,14 @@ describe(\`{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe\`, ()
 [StoryID('sid')]
 [AutomationID('aid')]
 [CustomTag('ct')]
-describe('{storyIds:["sid"],automationIds:["aid"],tags:{}} - the describe', () => {
+describe('{storyIds:["sid"],automationIds:["aid"],tags:{},custom:{"CustomTag": ["ct"]}} - the describe', () => {
     test('test 1', () => {});
     [StoryID('sid1')]
     [AutomationID('aid1')]
-    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{}} - test 2', () => {});
+    test('{storyIds:["sid1"],automationIds:["aid1"],tags:{},custom:{}} - test 2', () => {});
     [StoryID('sid2')]
     [AutomationID('aid2')]
-    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{}} - test 3', () => {});
+    it('{storyIds:["sid2"],automationIds:["aid2"],tags:{},custom:{}} - test 3', () => {});
 });`
             expect(process(src, 'filename', { rootDir: '..' } as GlobalConfig)).toBe(expected);
 

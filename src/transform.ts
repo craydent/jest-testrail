@@ -10,6 +10,7 @@ interface AlterSourceArg {
     storyIds: string[];
     automationIds: string[];
     tags: Object;
+    customAnnotations?: any;
 }
 
 export function process(src: string, filename: string, config: GlobalConfig) {
@@ -48,6 +49,7 @@ export function processMatches(src: string, matches: string[], options: Options)
     let tags = {};
     let tagMethodStr = "";
     let tagMethods = {};
+    let customAnnotations = {};
     if (options.tags) {
         for (let i = 0, len = options.tags.length; i < len; i++) {
             let tag = options.tags[i];
@@ -70,36 +72,59 @@ export function processMatches(src: string, matches: string[], options: Options)
         const match = matches[i];
         const attributes = match.match(/(\[[\s\S]*?\])/g);
         for (let j = 0, jlen = attributes.length; j < jlen; j++) {
+            let excludeList = { alterSource: 1, process: 1, processMatches: 1 };
             try { eval(attributes[j]); } catch (e) {
-                if (options.tags) {
-                    try {
-                        var attr = attributes[j];
-                        for (let i = 0, len = options.tags.length; i < len; i++) {
-                            let tag = options.tags[i];
-                            attr = attr.replace(new RegExp(`${tag}\\s*?\\(`, 'g'), `tagMethods.${tag}\(`);
-                        }
-                        eval(attr);
-                    } catch (e) { }
+                let customMethods = "";
+                let attribute = attributes[j];
+                const undefinedMatches = attribute.match(/[a-zA-Z0-9$_]+?\(/g);
+                for (let k = 0, klen = undefinedMatches.length; k < klen; k++) {
+                    const name = $c.strip(undefinedMatches[k].match(/^[_a-zA-Z$][_a-zA-Z0-9$]*?\(/g)[0], '(');
+                    if (name && !(name in excludeList)) {
+                        excludeList[name] = 1;
+                        customAnnotations[name] = customAnnotations[name] || [];
+                        customMethods += `
+                        function ${name} () {
+                            for (let i = 0, len = arguments.length; i < len; i++) {
+                                customAnnotations.${name}.push(arguments[i]);
+                            }
+                        }`;
+                    }
+                }
+                try {
+                    eval(customMethods + attributes[j]);
+                } catch (e) {
+                } finally {
+                    if (options.tags) {
+                        try {
+                            for (let i = 0, len = options.tags.length; i < len; i++) {
+                                let tag = options.tags[i];
+                                attribute = attribute.replace(new RegExp(`${tag}\\s*?\\(`, 'g'), `tagMethods.${tag}\(`);
+                            }
+                            eval(attribute);
+                        } catch (e) { }
+                    }
                 }
             }
         }
 
-        src = alterSource({ src, match, storyIds, automationIds, tags });
+        src = alterSource({ src, match, storyIds, automationIds, tags, customAnnotations });
         storyIds = [];
         automationIds = [];
         if (reset) {
             eval(reset);
         }
+        customAnnotations = {};
     }
     return src;
 }
 export function alterSource(params: AlterSourceArg) {
-    const { src, match, storyIds, automationIds, tags } = params;
+    const { src, match, storyIds, automationIds, tags, customAnnotations } = params;
     const message = match.replace(messageRegex, '$5');
     const rawStoryIds = $c.parseRaw(storyIds);
     const rawAutomationIds = $c.parseRaw(automationIds);
     const rawTags = $c.parseRaw(tags);
-    const replacer = `{storyIds:${rawStoryIds},automationIds:${rawAutomationIds},tags:${rawTags}} - ${message}`;
+    const rawCustom = $c.parseRaw(customAnnotations || {});
+    const replacer = `{storyIds:${rawStoryIds},automationIds:${rawAutomationIds},tags:${rawTags},custom:${rawCustom}} - ${message}`;
     const final = match.replace(message, replacer);
     return src.replace(match, final);
 }

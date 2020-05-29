@@ -2,6 +2,7 @@ import * as $c from "craydent";
 import JestReporter from "../src/reporter";
 import { GlobalConfig } from "@jest/types/build/Config";
 import { TestResult } from "@jest/test-result";
+import { Test } from "@jest/reporters/build/types";
 import { TestResult as Result } from "../models/TestResult";
 import { Test as RTest } from "../models/Suite";
 
@@ -110,7 +111,7 @@ describe('JestReporter', () => {
                         duration: 1
                     },
                     {
-                        ancestorTitles: ['ancestor'],
+                        ancestorTitles: [],
                         failureMessages: [],
                         fullName: '{storyIds:["sid1"],automationIds:null} test 6',
                         location: null,
@@ -121,19 +122,19 @@ describe('JestReporter', () => {
                     }
                 ]
             };
-            reporter.onTestResult(null, testResult, null);
+            reporter.onTestResult({ path: 'the path' } as Test, testResult, null);
             let expected: Result = {
                 ...defaultTestResults,
                 time: 6,
                 suites: [
                     {
-                        total: 6,
-                        passed: 6,
+                        total: 5,
+                        passed: 5,
                         failed: 0,
                         pending: 0,
                         skipped: 0,
                         name: 'ancestor',
-                        time: 6,
+                        time: 5,
                         tests: [{
                             name: 'title',
                             time: 2,
@@ -152,7 +153,25 @@ describe('JestReporter', () => {
                             automationId: 'aid1'
                         }, {
                             name: 'title 3',
-                            time: 2,
+                            time: 1,
+                            result: 'passed',
+                            tags: {},
+                            type: 'UnitTest',
+                            storyId: 'sid1',
+                            automationId: ''
+                        }]
+                    },
+                    {
+                        total: 1,
+                        passed: 1,
+                        failed: 0,
+                        pending: 0,
+                        skipped: 0,
+                        name: 'the path',
+                        time: 1,
+                        tests: [ {
+                            name: 'title 6',
+                            time: 1,
                             result: 'passed',
                             tags: {},
                             type: 'UnitTest',

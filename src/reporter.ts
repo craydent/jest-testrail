@@ -37,15 +37,15 @@ export default class JestReporter {
     options.hooks = hooksPath ? $c.include(hooksPath) : {};
   }
 
-  onTestResult(test: Test, testResult: TestResult, aggregatedResult: AggregatedResult) {
+  onTestResult(jtest: Test, testResult: TestResult, aggregatedResult: AggregatedResult) {
     let suiteGroups = {};
     let options = this.testResults.options;
     for (let i = 0, len = testResult.testResults.length; i < len; i++) {
       const result = testResult.testResults[i];
       this.testResults.time += result.duration;
 
-      const group = $c
-        .last(result.ancestorTitles)
+      const group = ($c
+        .last(result.ancestorTitles) || jtest.path)
         .replace(/\{.*?(\}\s-\s)/g, "");
       let { tests, suiteGroup } = this._getSuiteGroupAndTests(
         result,
